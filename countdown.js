@@ -7,15 +7,6 @@ function countdown(parentelementid) {
     this.deg2rad = function (degrees) {
         return (Math.PI / 180) * degrees;
     };
-    this.rad2deg = function (radians) {
-        return (radians * 180) / Math.PI;
-    };
-    this.polar2x = function (r, q) {
-        return r * Math.cos(q);
-    };
-    this.polar2y = function (r, q) {
-        return r * Math.sin(q);
-    };
     this.drawGauge = function (canvas, sa, ea, cc) {
         if (canvas.getContext) {
             cw = canvas.width;
@@ -26,7 +17,7 @@ function countdown(parentelementid) {
             cy = ch / 2;
             r = Math.min(cw, ch) / 2.2;
             lw = r / 15;
-            if (ea == sa) {
+            if (ea === sa) {
                 ea = sa + 360;
             }
             cc = false;
