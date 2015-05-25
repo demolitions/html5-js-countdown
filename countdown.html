@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Countdown TEST</title>
+        <script type="text/javascript" src="lib/js/jquery-1.9.1.js"></script>
+        <script type="text/javascript" src="countdown.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                timer = new countdown("countdown-container");
+                timer.size = 200;
+                timer.end = "2020-12-31T00:00:00";
+                timer.font = "Open Sans";
+                timer.draw();
+            });
+        </script>
+        <style type="text/css">
+            html,body {
+                padding:0;
+                margin:0;
+                background-color:black;
+                background-image:url(http://img.hdwallpaperpc.com/cover/53/Fantasy_Planet_Space_Impact_52063.jpg);
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="countdown-container"></div>
+    </body>
+</html>
