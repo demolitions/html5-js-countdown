@@ -1,9 +1,11 @@
 function countdown(parentelementid) {
+    var self = this;
     this.parentid = parentelementid;
     this.size = 150;
     this.font = "Open Sans";
     this.end = "2000-01-01T00:00:00";
     this._endTime = null;
+    this.onDraw = null;
     this.deg2rad = function (degrees) {
         return (Math.PI / 180) * degrees;
     };
@@ -25,13 +27,13 @@ function countdown(parentelementid) {
             ctx.lineWidth = lw;
             ctx.globalAlpha = 0.2;
             ctx.strokeStyle = "#FFFFFF";
-            ctx.arc(cx, cy, r, this.deg2rad(sa), this.deg2rad(sa + 360));
+            ctx.arc(cx, cy, r, self.deg2rad(sa), self.deg2rad(sa + 360));
             ctx.stroke();
             ctx.beginPath();
             ctx.lineWidth = lw;
             ctx.strokeStyle = "#FFFFFF";
             ctx.globalAlpha = 1;
-            ctx.arc(cx, cy, r, this.deg2rad(sa), this.deg2rad(ea));
+            ctx.arc(cx, cy, r, self.deg2rad(sa), self.deg2rad(ea));
             ctx.stroke();
         }
     };
@@ -43,37 +45,37 @@ function countdown(parentelementid) {
             cx = cw / 2;
             cy = ch / 2;
             ctx.fillStyle = "#FFFFFF";
-            ctx.font = (this.size / 5) + "px " + this.font;
+            ctx.font = (self.size / 5) + "px " + self.font;
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText(value, cx, cy - (this.size / 10));
-            ctx.font = (this.size / 10) + "px " + this.font;
-            ctx.fillText(text, cx, cy + (this.size / 10));
+            ctx.fillText(value, cx, cy - (self.size / 10));
+            ctx.font = (self.size / 10) + "px " + self.font;
+            ctx.fillText(text, cx, cy + (self.size / 10));
         }
     };
     this.drawDays = function (canvas, days) {
         eq = ((360 * days) / 365) - 90;
         sq = -90;
-        this.drawGauge(canvas, sq, eq, false);
-        this.textGauge(canvas, days, "Days");
+        self.drawGauge(canvas, sq, eq, false);
+        self.textGauge(canvas, days, "Days");
     };
     this.drawHours = function (canvas, hrs) {
         eq = ((360 * hrs) / 24) - 90;
         sq = -90;
-        this.drawGauge(canvas, sq, eq, false);
-        this.textGauge(canvas, hrs, "Hours");
+        self.drawGauge(canvas, sq, eq, false);
+        self.textGauge(canvas, hrs, "Hours");
     };
     this.drawMinutes = function (canvas, mins) {
         eq = ((360 * mins) / 60) - 90;
         sq = -90;
-        this.drawGauge(canvas, sq, eq, false);
-        this.textGauge(canvas, mins, "Minutes");
+        self.drawGauge(canvas, sq, eq, false);
+        self.textGauge(canvas, mins, "Minutes");
     };
     this.drawSeconds = function (canvas, sec) {
         eq = ((360 * sec) / 60) - 90;
         sq = -90;
-        this.drawGauge(canvas, sq, eq, false);
-        this.textGauge(canvas, sec, "Seconds");
+        self.drawGauge(canvas, sq, eq, false);
+        self.textGauge(canvas, sec, "Seconds");
     };
     this.calcDistance = function (dist) {
         var distance = {
@@ -98,27 +100,28 @@ function countdown(parentelementid) {
     };
     this.redraw = function () {
         now = new Date();
-        dist = Math.floor(this._endTime - (now.getTime() / 1000));
-        distance = this.calcDistance(dist);
-        var cdays = document.getElementById(this.parentid + '_days');
-        var chors = document.getElementById(this.parentid + '_hours');
-        var cmins = document.getElementById(this.parentid + '_minutes');
-        var csecs = document.getElementById(this.parentid + '_seconds');
-        this.drawDays(cdays, distance.days);
-        this.drawHours(chors, distance.hours);
-        this.drawMinutes(cmins, distance.mins);
-        this.drawSeconds(csecs, distance.secs);
+        dist = Math.floor(self._endTime - (now.getTime() / 1000));
+        distance = self.calcDistance(dist);
+        var cdays = document.getElementById(self.parentid + '_days');
+        var chors = document.getElementById(self.parentid + '_hours');
+        var cmins = document.getElementById(self.parentid + '_minutes');
+        var csecs = document.getElementById(self.parentid + '_seconds');
+        self.drawDays(cdays, distance.days);
+        self.drawHours(chors, distance.hours);
+        self.drawMinutes(cmins, distance.mins);
+        self.drawSeconds(csecs, distance.secs);
+        if (typeof(self.onDraw) === "function") {
+            self.onDraw(distance);
+        }
     };
     this.draw = function () {
-        cdstr = '<canvas id="' + this.parentid + '_days" class="countdown_canvas" width="' + this.size + '" height="' + this.size + '"></canvas>';
-        cdstr += '<canvas id="' + this.parentid + '_hours" class="countdown_canvas" width="' + this.size + '" height="' + this.size + '"></canvas>';
-        cdstr += '<canvas id="' + this.parentid + '_minutes" class="countdown_canvas" width="' + this.size + '" height="' + this.size + '"></canvas>';
-        cdstr += '<canvas id="' + this.parentid + '_seconds" class="countdown_canvas" width="' + this.size + '" height="' + this.size + '"></canvas>';
-        document.getElementById(this.parentid).innerHTML = cdstr;
-        var endDate = new Date(this.end);
-        this._endTime = (endDate.getTime() / 1000);
-        var ts = setInterval(function (obj) {
-            obj.redraw();
-        }, 1000, this);
+        cdstr = '<canvas id="' + self.parentid + '_days" class="countdown_canvas" width="' + self.size + '" height="' + self.size + '"></canvas>';
+        cdstr += '<canvas id="' + self.parentid + '_hours" class="countdown_canvas" width="' + self.size + '" height="' + self.size + '"></canvas>';
+        cdstr += '<canvas id="' + self.parentid + '_minutes" class="countdown_canvas" width="' + self.size + '" height="' + self.size + '"></canvas>';
+        cdstr += '<canvas id="' + self.parentid + '_seconds" class="countdown_canvas" width="' + self.size + '" height="' + self.size + '"></canvas>';
+        document.getElementById(self.parentid).innerHTML = cdstr;
+        var endDate = new Date(self.end);
+        self._endTime = (endDate.getTime() / 1000);
+        var ts = setInterval(self.redraw, 1000);
     };
 }
